@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="mb-4">Network Traffic Analysis</h1>
+
+<div class="card mb-4" style="width: 50%; margin: 0 auto;">
+    <div class="card-body">
+        <div class="alert alert-info" role="alert">
+            This page allows you to upload a CSV file containing network traffic data and view live traffic.
+            The uploaded data will be processed and displayed in a table below.
+        </div>
+        <form action="/upload_traffic" method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="mb-3">
+                <label for="csvFile" class="form-label">Upload CSV File</label>
+                <input type="file" class="form-control" id="csvFile" name="csv_file" accept=".csv" required>
+                <div class="form-text text-warning">Maximum file size: 30MB.</div>
+            </div>
+            <div class="d-grid">
+                <button class="btn btn-primary" type="submit">Upload CSV</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<h2 class="mt-5 mb-3">Uploaded File Results</h2>
+{% if traffic %}
+<div class="table-responsive mb-4">
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                {# .keys() not .keys for Jinja2 templates #}
+                {% for col in traffic.0.keys() %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody id="traffic-table-body">
+            {% for row in traffic[:50] %}
+                <tr>
+                    {% for val in row.values() %}
+                        <td>{{ val }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="d-flex justify-content-between">
+    <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+    <button id="next-btn" class="btn btn-secondary" {% if traffic|length <= 50 %}disabled{% endif %}>Next</button>
+</div>
+<script>
+    const trafficData = {{ traffic|safe }};
+    let startIdx = 0;
+    const pageSize = 50;
+    const tbody = document.getElementById('traffic-table-body');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function renderTable() {
+        tbody.innerHTML = '';
+        const endIdx = Math.min(startIdx + pageSize, trafficData.length);
+        for (let i = startIdx; i < endIdx; i++) {
+            const row = trafficData[i];
+            let tr = document.createElement('tr');
+            for (const key in row) {
+                let td = document.createElement('td');
+                td.textContent = row[key];
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        prevBtn.disabled = startIdx === 0;
+        nextBtn.disabled = endIdx >= trafficData.length;
+    }
+
+    prevBtn.addEventListener('click', function() {
+        if (startIdx >= pageSize) {
+            startIdx -= pageSize;
+            renderTable();
+        }
+    });
+
+    nextBtn.addEventListener('click', function() {
+        if (startIdx + pageSize < trafficData.length) {
+            startIdx += pageSize;
+            renderTable();
+        }
+    });
+
+    // Only run if trafficData exists
+    if (trafficData && trafficData.length > 0) {
+        renderTable();
+    }
+</script>
+{% else %}
+<p class="text-muted">No uploaded traffic data yet.</p>
+{% endif %}
+{% if error %} 
+<p class="text-danger">{{ error }}</p>
+{% endif %}
+{% if success %}
+<p class="text-success">{{ success }}</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h3 class="mb-0">Edit Profile</h3>
+                </div>
+                <div class="card-body bg-light rounded-bottom-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="text-center mb-4">
+                            <label for="profile-pic-input" class="position-relative d-inline-block" style="cursor: pointer;">
+                                {% if user.profile_pic %}
+                                    <img src="{{ user.profile_pic }}" alt="Profile Picture" class="rounded-circle border border-primary" style="width: 120px; height: 120px;">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="rounded-circle border border-primary" style="width: 120px; height: 120px;">
+                                {% endif %}
+                                <span class="position-absolute start-50 bottom-0 translate-middle-x p-1 bg-white border border-primary rounded-circle" style="transform: translate(-50%, 25%);">
+                                    <i class="bi bi-pencil-square text-primary" style="font-size: 1.2rem;"></i>
+                                </span>
+                            </label>
+                            <input type="file" id="profile-pic-input" name="profile_pic" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control rounded-pill" value="{{ user.email|default('') }}" autocomplete="email">
+                        </div>
+                        <div class="mb-3">
+                            <label>Username</label>
+                            <input type="text" name="username" class="form-control rounded-pill" value="{{ user.username|default('') }}" autocomplete="username">
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-pill">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Add your traffic page content here -->
+<h1>Traffic Information</h1>
+<p>This page will display real-time traffic data.</p>
+
+<form id="upload-form" action="/upload_traffic" method="post" enctype="multipart/form-data">
+    <label for="csv_file">Upload Traffic CSV:</label>
+    <input type="file" name="csv_file" accept=".csv" required>
+    <button type="submit">Upload</button>
+</form>
+<br>
+
+<div id="traffic-table-container">
+    <table id="traffic-table" border="1">
+        <thead>
+            <tr>
+            <th style="text-align: center;">Time</th>
+            <th style="text-align: center;">Source IP</th>
+            <th style="text-align: center;">Destination IP</th>
+            <th style="text-align: center;">Protocol</th>
+            <th style="text-align: center;">Length</th>
+            <th style="text-align: center;">Info</th>
+            </tr>
+        </thead>
+        <style>
+            #traffic-table tbody td {
+            text-align: center;
+            }
+            .alert {
+                color: red;
+                font-weight: bold;
+            }
+        </style>
+        <tbody>
+            {% for traffic in traffic %}
+                <tr>
+                    <td>{{ traffic.timestamp }}</td>
+                    <td>{{ traffic.src_ip }}</td>
+                    <td>{{ traffic.dst_ip }}</td>
+                    <td>{{ traffic.protocol }}</td>
+                    <td>{{ traffic.length }}</td>
+                    <td>{{ traffic.info }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div id="alerts-container">
+    <h2>Alerts</h2>
+    <ul id="alerts-list"></ul>
+</div>
+<script>
+function fetchTraffic() {
+    fetch('/api/traffic')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.querySelector('#traffic-table tbody');
+            tbody.innerHTML = '';
+            const alertsList = document.querySelector('#alerts-list');
+            alertsList.innerHTML = ''; // Clear previous alerts
+            data.forEach(packet => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${packet.timestamp || packet.time}</td>
+                    <td>${packet.src_ip}</td>
+                    <td>${packet.dst_ip}</td>
+                    <td>${packet.protocol}</td>
+                    <td>${packet.length}</td>
+                    <td>${packet.info || ''}</td>
+                `;
+                tbody.appendChild(row);
+
+                // Check for anomalies
+                if (packet.is_anomalous) {
+                    const alertItem = document.createElement('li');
+                    alertItem.className = 'alert';
+                    alertItem.textContent = `Anomaly detected from ${packet.src_ip} to ${packet.dst_ip} at ${packet.timestamp || packet.time}`;
+                    alertsList.appendChild(alertItem);
+                }
+            });
+        });
+}
+setInterval(fetchTraffic, 2000);
+fetchTraffic();
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">User Profile</h3>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="text-center mb-4">
+                        <img src="{{ user.profile_pic }}" class="rounded-circle border border-primary" alt="Profile Picture" width="60" height="60">
+                    </div>
+                    <h5 class="card-title text-primary text-center">{{ user.get_full_name }}</h5>
+                    <p class="card-text text-center text-secondary">@{{ user.username }}</p>
+                    <hr>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+                        <!-- Add more profile fields as needed -->
+                    </ul>
+                    <div class="d-grid">
+                        <a href="{{ url_for('auth.edit_profile', user_id=user.id) }}" class="btn btn-primary">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

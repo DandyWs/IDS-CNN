@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}User Management{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h2>User Management</h2>
+    <!-- Add User Form -->
+    <div class="mb-4">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Add User</a>
+    </div>
+
+    <!-- Users Table -->
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        {% if user.profile_pic %}
+                            <img src="{{ user.profile_pic }}" alt="Profile Picture" class="rounded-circle me-2" width="40" height="40">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='default.png') }}" alt="Profile Picture" class="rounded-circle me-2" width="40" height="40">
+                        {% endif %}
+                        <span>{{ user.username }}</span>
+                    </div>
+                </td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <!-- Edit Button triggers modal -->
+                    <a href="{{ url_for('auth.edit_profile', user_id=user.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('auth.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
