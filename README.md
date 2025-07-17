@@ -2,7 +2,7 @@
 
 This project implements a Network Intrusion Detection System (NIDS) using a Convolutional Neural Network (CNN) for anomaly detection in network traffic. The system is designed to monitor real-time traffic data and identify potential intrusions based on learned patterns from historical data.
 
-## Project Structure
+<!-- ## Project Structure
 
 - **templates/**: Contains HTML templates for the web application.
   - **base.html**: The base template that includes common HTML structure.
@@ -44,4 +44,4 @@ This project implements a Network Intrusion Detection System (NIDS) using a Conv
 
 - Improve the CNN model's accuracy by using more diverse training data.
 - Implement user authentication for accessing the application.
-- Add logging and monitoring features for better insights into network traffic patterns.
+- Add logging and monitoring features for better insights into network traffic patterns. -->
