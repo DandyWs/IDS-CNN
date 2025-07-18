@@ -98,70 +98,80 @@
         </nav>
         {% endblock %}
 
-        {% with messages=get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="container mt-3">
-            {% for category, message in messages %}
-            {% if category == 'error' %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% elif category == 'success' %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% elif category == 'info' %}
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% elif category == 'warning' %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
+        
 
         <div class="d-flex" id="main-wrapper">
             {% block sidebar %}
             <nav id="sidebarMenu" class="bg-light sidebar">
-            <div class="position-sticky">
-                <ul class="nav flex-column pt-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">
-                    <span class="me-2"><i class="bi bi-house"></i></span>
-                    Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/users">
-                    <span class="me-2"><i class="bi bi-people"></i></span>
-                    User Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/live_capture">
-                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                    Live Capture
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">
-                    <span class="me-2"><i class="bi bi-box-arrow-right"></i></span>
-                    Logout
-                    </a>
-                </li>
-                </ul>
-            </div>
+                <div class="position-sticky">
+                    <ul class="nav flex-column pt-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <span class="me-2"><i class="bi bi-house"></i></span>
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users">
+                                <span class="me-2"><i class="bi bi-people"></i></span>
+                                User Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/live_capture">
+                                <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                                Live Capture
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">
+                                <span class="me-2"><i class="bi bi-box-arrow-right"></i></span>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </nav>
             {% endblock %}
+            {% if no_sidebar %}
+            <style>
+                #main-content {
+                    width: 100% !important;
+                    margin-left: 0 !important;
+                    max-width: 100vw !important;
+                }
+            </style>
+            {% endif %}
             <div class="container mt-5 flex-grow-1" id="main-content" style="margin-left: 0; transition: margin-left 0.3s;">
+                {% with messages=get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                    {% if category == 'error' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% elif category == 'success' %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% elif category == 'info' %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% elif category == 'warning' %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
             {% block content %}
             {% endblock %}
             </div>

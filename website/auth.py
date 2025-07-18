@@ -44,7 +44,7 @@ def login():
                 return redirect(url_for('auth.login'))
         
         else:
-            flash('Login failed. Check your email and password.', 'error')
+            flash('Login failed. Email not found.', 'error')
             return redirect(url_for('auth.login'))
     return render_template('user/login.html')
     
@@ -76,6 +76,10 @@ def register():
         if user:
             flash('Email already exists. Please choose a different one.', 'error')
             return redirect(url_for('auth.register'))
+        username_exists = User.query.filter_by(username=username).first()
+        if username_exists:
+            flash('Username already exists. Please choose a different one.', 'error')
+            return redirect(url_for('auth.register'))
         # Here you would typically save the new user to a database
         # Hash the password for security
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
@@ -89,7 +93,7 @@ def register():
         db.session.commit()  # Commit the new user to the database
         # login_user(user, remember=True)
         flash(f'User {username} registered successfully!', 'success')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.list_users'))
     
     return render_template('user/register.html')
 
